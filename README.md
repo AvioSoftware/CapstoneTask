@@ -6,6 +6,14 @@ Install npm packages
 ```
 npm install
 ```
+Change node env if you need
+```
+NODE_ENV=production
+```
+or
+```
+set NODE_ENV=production
+```
 Run client.js
 ```
 node client
