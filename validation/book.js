@@ -3,8 +3,8 @@ const isEmpty = require("../utils/is-empty");
 module.exports = validateBookPlayload = (payload) => {
   const errors = {};
   if (isEmpty(payload.id)) errors.id = "Id is required!";
-  if (isEmpty(payload.titie)) errors.title = "Title is requried!";
-  else if (payload.titie.length > 30)
+  if (isEmpty(payload.title)) errors.title = "Title is requried!";
+  else if (payload.title.length > 30)
     errors.title = "Title must be shorter than 30 characters!";
   if (isEmpty(payload.author)) errors.author = "Author name is required!";
   else if (payload.author.length > 20)

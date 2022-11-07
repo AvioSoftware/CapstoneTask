@@ -37,4 +37,4 @@ let bookSchema = mongoose.Schema({
   due: Date,
 });
 
-module.exports = Book = mongoose.model("Books", bookSchema);
+module.exports = Book = mongoose.model("books", bookSchema);

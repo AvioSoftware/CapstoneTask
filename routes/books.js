@@ -107,14 +107,14 @@ router.put("/:id", (req, res) => {
 // @route DELETE /books
 // @desc  Delete the book matching id (if it exits) regardless of checkout status
 router.delete("/:id", (req, res) => {
-  Book.findOne({ id: req.body.id }).then((result) => {
+  Book.findOne({ id: req.params.id }).then((result) => {
     if (!result) {
       return res.status(204).json({ msg: "no content" });
     }
 
     result
       .remove()
-      .then((result) => res.status(201).json({ msg: "ok", result }));
+      .then((result) => res.status(200).json({ msg: "ok", result }));
   });
 });
 
