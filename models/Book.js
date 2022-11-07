@@ -19,7 +19,7 @@ let bookSchema = mongoose.Schema({
   publisher: {
     type: String,
     required: true,
-    max: 30,
+    max: 20,
   },
   isbn: {
     type: String,

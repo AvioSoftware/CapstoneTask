@@ -4,6 +4,7 @@ const express = require("express");
 // Importing models
 const Book = require("../models/Book");
 // Importing utils
+const validateBookPlayload = require("../validation/book");
 const isEmpty = require("../utils/is-empty");
 
 const router = express.Router();
@@ -47,6 +48,8 @@ router.get("/:id", (req, res) => {
 // @desc  Add a new book as described in request body (JSON),
 //        which includes id & status
 router.post("/", (req, res) => {
+  const { errors, isValid } = validateBookPlayload(req.body);
+  if (!isValid) return res.status(400).json(errors);
   Book.findOne({ id: req.body.id }).then((result) => {
     if (result) {
       return res.status(403).json({ msg: "already exists" });
