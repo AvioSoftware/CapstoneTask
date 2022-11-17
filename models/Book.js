@@ -28,7 +28,7 @@ let bookSchema = mongoose.Schema({
   },
   status: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   checkedOutBy: {
     type: String,
