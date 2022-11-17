@@ -26,15 +26,15 @@ let bookSchema = mongoose.Schema({
     unique: true,
     required: true,
   },
-  avail: {
+  status: {
     type: Boolean,
     default: true,
   },
-  who: {
+  checkedOutBy: {
     type: String,
     max: 20,
   },
-  due: Date,
+  dueDate: Date,
 });
 
 module.exports = Book = mongoose.model("books", bookSchema);

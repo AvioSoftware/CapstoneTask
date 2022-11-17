@@ -1,4 +1,4 @@
-// Importing moduels
+// Importing modueDatels
 const express = require("express");
 
 // Importing models
@@ -11,26 +11,17 @@ const router = express.Router();
 
 // @route GET /books
 // @desc  Returns a list of all books (title & id) regardless of
-//        checkout status (i.e. both available and checked-out books should be included)
-//        and can be filtered by avail
+//        checkout status (i.e. both status and checked-out books should be included)
+//        and can be filtered by status
 router.get("/", (req, res) => {
-  if (isEmpty(req.body.avail)) {
-    Book.find()
-      .select("id title")
-      .then((result) => {
-        if (!result) {
-          return res.status(404).json({ msg: "not found" });
-        }
-        res.json({ msg: "ok", result });
-      });
-  } else {
-    Book.find({ avail: req.body.avail }, "id title").then((result) => {
+  Book.find()
+    // .select("id title")
+    .then((result) => {
       if (!result) {
         return res.status(404).json({ msg: "not found" });
       }
       res.json({ msg: "ok", result });
     });
-  }
 });
 
 // @route GET /books/:id
@@ -48,25 +39,34 @@ router.get("/:id", (req, res) => {
 // @desc  Add a new book as described in request body (JSON),
 //        which includes id & status
 router.post("/", (req, res) => {
-  const { errors, isValid } = validateBookPlayload(req.body);
-  if (!isValid) return res.status(400).json(errors);
-  Book.findOne({ id: req.body.id }).then((result) => {
-    if (result) {
-      return res.status(403).json({ msg: "already exists" });
-    }
-
-    const newBook = new Book({
-      id: req.body.id,
-      title: req.body.title,
-      author: req.body.author,
-      publisher: req.body.publisher,
-      isbn: req.body.isbn,
+  if (!isEmpty(req.body.status)) {
+    Book.find({ status: req.body.status } /*, "id title"*/).then((result) => {
+      if (!result) {
+        return res.status(404).json({ msg: "not found" });
+      }
+      res.json({ msg: "ok", result });
     });
+  } else {
+    const { errors, isValid } = validateBookPlayload(req.body);
+    if (!isValid) return res.status(400).json(errors);
+    Book.findOne({ id: req.body.id }).then((result) => {
+      if (result) {
+        return res.status(403).json({ msg: "already exists" });
+      }
 
-    newBook
-      .save()
-      .then((result) => res.status(201).json({ msg: "created", result }));
-  });
+      const newBook = new Book({
+        id: req.body.id,
+        title: req.body.title,
+        author: req.body.author,
+        publisher: req.body.publisher,
+        isbn: req.body.isbn,
+      });
+
+      newBook
+        .save()
+        .then((result) => res.status(201).json({ msg: "created", result }));
+    });
+  }
 });
 
 // @route PUT /books
@@ -82,23 +82,65 @@ router.put("/:id", (req, res) => {
     if (!isEmpty(req.body.author)) result.author = req.body.author;
     if (!isEmpty(req.body.publisher)) result.publisher = req.body.publisher;
     if (!isEmpty(req.body.isbn)) result.isbn = req.body.isbn;
-    if (!isEmpty(req.body.avail)) {
-      if (req.body.avail) {
-        result.avail = true;
-        result.who = "";
-        result.due = "";
+    if (!isEmpty(req.body.status)) {
+      if (!req.body.status) {
+        result.status = false;
+        result.checkedOutBy = "";
+        result.dueDate = "";
       } else {
-        if (!isEmpty(req.body.who)) {
-          result.who = req.body.who;
-          result.due = isEmpty(req.body.due) ? Date.now() : req.body.due;
-          result.avail = false;
+        if (!isEmpty(req.body.checkedOutBy)) {
+          result.checkedOutBy = req.body.checkedOutBy;
+          result.dueDate = isEmpty(req.body.dueDate)
+            ? Date.now()
+            : req.body.dueDate;
+          result.status = true;
         } else {
-          result.avail = true;
-          result.who = "";
-          result.due = "";
+          result.status = false;
+          result.checkedOutBy = "";
+          result.dueDate = "";
         }
       }
     }
+
+    result.save().then((result) => res.status(200).json({ msg: "ok", result }));
+  });
+});
+
+// @route POST /books/checkOut
+// @desc  For book matching id, check out it
+router.post("/checkOut/:id", (req, res) => {
+  Book.findOne({ id: req.params.id }).then((result) => {
+    if (!result) {
+      return res.status(404).json({ msg: "not found" });
+    }
+
+    if (!isEmpty(req.body.checkedOutBy)) {
+      result.checkedOutBy = req.body.checkedOutBy;
+      result.dueDate = isEmpty(req.body.dueDate)
+        ? Date.now()
+        : req.body.dueDate;
+      result.status = true;
+    } else {
+      result.status = false;
+      result.checkedOutBy = "";
+      result.dueDate = "";
+    }
+
+    result.save().then((result) => res.status(200).json({ msg: "ok", result }));
+  });
+});
+
+// @route POST /books/checkIn
+// @desc  For book matching id, check in it
+router.post("/checkIn/:id", (req, res) => {
+  Book.findOne({ id: req.params.id }).then((result) => {
+    if (!result) {
+      return res.status(404).json({ msg: "not found" });
+    }
+
+    result.status = false;
+    result.checkedOutBy = "";
+    result.dueDate = "";
 
     result.save().then((result) => res.status(200).json({ msg: "ok", result }));
   });

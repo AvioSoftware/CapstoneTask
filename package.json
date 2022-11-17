@@ -1,17 +1,22 @@
 {
   "name": "express-tracking-library-books",
   "version": "0.0.1",
-  "description": "REST API backend in Express.js to track library books.",
+  "description": "Full-Stack REST API to track library books.",
   "main": "server.js",
   "scripts": {
+    "client-install": "npm install --prefix client",
     "start": "node server",
-    "server": "nodemon server"
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "pro": "set NODE_ENV=production&&concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ithunter101/Express-Tracking-Library-Books.git"
   },
   "keywords": [
+    "react",
     "express",
     "book"
   ],
@@ -23,6 +28,7 @@
   "homepage": "https://github.com/ithunter101/Express-Tracking-Library-Books#readme",
   "dependencies": {
     "body-parser": "^1.20.1",
+    "concurrently": "^7.5.0",
     "express": "^4.18.2",
     "mongoose": "^6.7.1"
   },

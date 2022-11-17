@@ -1,0 +1,21 @@
+.App {
+  margin: auto;
+  width: 1280px;
+  border: 3px solid green;
+  padding: 10px;
+}
+
+.select-filter-option {
+  margin: auto;
+  width: 25%;
+}
+
+table {
+  margin: auto;
+  margin-top: 32px;
+  width: 100%;
+}
+
+tr > th {
+  text-align: left;
+}
