@@ -1,20 +1,43 @@
-# Express-Tracking-Library-Books
-REST API backend in Express.js to track library books.
+# Capstone Task
+
+Full MERN stack in order to track library books.
 
 ## How to run project
-Install npm packages
+
+### Install npm packages
+
 ```
 npm install
 ```
-Change node env if you need
+
+### Run in development mode
+
 ```
-NODE_ENV=production
+npm run dev
 ```
-or
+
+### Run in production mode
+
+You can change node environment to run this project without local mongodb server.
+
 ```
 set NODE_ENV=production
 ```
-Run client.js
+
+Run backend
+
 ```
-node client
+node server
+```
+
+Build front-end
+
+```
+npm run client-build
+```
+
+Run front-end
+
+```
+http-server client/build --port 3000
 ```
